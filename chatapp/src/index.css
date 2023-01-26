@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.left {
+    @apply flex justify-start my-3;
+}
+
+.right {
+    @apply flex justify-end my-3;
+}
