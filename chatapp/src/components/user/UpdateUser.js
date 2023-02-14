@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import * as api from "../../api";
+import { useDispatch } from "react-redux";
 import {
   Avatar,
   Dialog,
@@ -13,18 +14,17 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
+import { editUser } from "../../redux/reducer/authSlice";
 export default function UpdateUser({ handleClose }) {
   const { result } = JSON.parse(localStorage.getItem("user"));
-  const [updateUser, setUpdateUser] = React.useState(false);
+  const dispatch = useDispatch();
   const [userData, setUserData] = React.useState({
     fullName: "",
     avatar: "",
     phone: "",
     address: "",
   });
-  const [user, setUser] = React.useState(
-    JSON.parse(localStorage.getItem("user"))
-  );
+
   const [temp, setTemp] = React.useState("");
   React.useEffect(() => {
     if (result) {
@@ -36,12 +36,6 @@ export default function UpdateUser({ handleClose }) {
       });
     }
   }, []);
-
-  // const handleImage = (e) => {
-  //   // setuserData({ ...userData, avatar: URL.createObjectURL(e.target.files[0]) });
-  //   setuserData({ ...userData, avatar: e.target.files[0] });
-  //   setTemp(URL.createObjectURL(e.target.files[0]));
-  // };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -55,26 +49,14 @@ export default function UpdateUser({ handleClose }) {
       body: formData,
     })
       .then((res) => res.json())
-      .then(async (data) => {
-        console.log(data.url.toString());
-        console.log(userData);
-        try {
-          const { data: results } = await api.update(
-            {
-              ...userData,
-              avatar: data.url.toString(),
-            },
-            result?._id
-          );
-          // setUser({ ...user, result: results });
-          // console.log(results);
-          localStorage.removeItem("user");
-          localStorage.setItem("user", JSON.stringify({ result: results }));
-          setUpdateUser(true);
-          handleClose();
-        } catch (error) {
-          console.log(error);
-        }
+      .then((data) => {
+        dispatch(
+          editUser({
+            data: { ...userData, avatar: data.url.toString() },
+            id: result?._id,
+          })
+        );
+        handleClose();
       });
   };
   return (

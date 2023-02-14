@@ -103,8 +103,15 @@ export const UpdateUser = async (req, res) => {
       },
       { new: true }
     );
+    const token = jwt.sign(
+      { email: newUser.email, id: newUser._id },
+      process.env.TOKEN,
+      { expiresIn: "30d" }
+    );
+
     res.status(200).json({
       result: newUser,
+      token,
     });
   } catch (err) {
     res.status(500).json({

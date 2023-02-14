@@ -2,7 +2,6 @@ import { Avatar, Tooltip } from "@mui/material";
 import React from "react";
 import moment from "moment";
 const MessageLeft = ({ item }) => {
-  // console.log(item);
   return (
     <div className="left">
       <div className="flex max-w-[90%]">
@@ -13,7 +12,7 @@ const MessageLeft = ({ item }) => {
         >
           <Avatar
             //  src="https://i.pinimg.com/236x/19/23/6a/19236afdd84bc24253fa074bc27c9b64.jpg"
-            src={item?.users?.avatar}
+            src={item?.users?.avatar || item?.avatar}
           />
         </Tooltip>
 

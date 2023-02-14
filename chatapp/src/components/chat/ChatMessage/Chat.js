@@ -1,5 +1,5 @@
 import { AttachFile, InsertEmoticon, Send } from "@mui/icons-material";
-import { Button } from "@mui/material";
+import { Avatar, Button } from "@mui/material";
 import React from "react";
 import { GIFJSON } from "../../../constant";
 import Message from "../../messages/Message";
@@ -94,6 +94,7 @@ const Chat = ({ idChat, setSendMessage, receiveMessage }) => {
     const message = {
       idChat,
       content: textMessage,
+      avatar: result.avatar,
     };
     try {
       const { data } = await api.sendMessage(message);
@@ -129,20 +130,20 @@ const Chat = ({ idChat, setSendMessage, receiveMessage }) => {
 
   const handleChange = (e) => {
     setTextMessage(e.target.value);
-    const idUser = chats?.users.find((item) => item._id !== result._id)?._id;
-    socket.emit("typing-start", { idUser });
+    // const idUser = chats?.users.find((item) => item._id !== result._id)?._id;
+    // socket.emit("typing-start", { idUser });
 
-    setTyping(true);
-    if (typingTimeout) {
-      clearTimeout(typingTimeout);
-    }
-    setTypingTimeout(
-      setTimeout(() => {
-        // socket.emit("typing", "");
-        console.log("typing-stop");
-        setTyping(false);
-      }, 1000)
-    );
+    // setTyping(true);
+    // if (typingTimeout) {
+    //   clearTimeout(typingTimeout);
+    // }
+    // setTypingTimeout(
+    //   setTimeout(() => {
+    //     // socket.emit("typing", "");
+    //     console.log("typing-stop");
+    //     setTyping(false);
+    //   }, 1000)
+    // );
   };
   React.useEffect(() => {
     socket.on("typing-start-server", (data) => {
@@ -157,12 +158,20 @@ const Chat = ({ idChat, setSendMessage, receiveMessage }) => {
     <div className="h-screen">
       {/* //header */}
       <div className="bg-slate-50 shadow-sm h-[70px]">
-        <div className="flex items-center justify-between p-6">
-          <div onClick={() => dispatch(closeModal())}>
-            <h1 className="text-bold text-2xl cursor-pointer">
+        <div className="flex items-center justify-between p-5">
+          <div className="flex item-center justify-center">
+            <Avatar
+              src={chats?.users.find((item) => item._id !== result._id)?.avatar}
+              size={50}
+              onClick={() => dispatch(closeModal())}
+              className="cursor-pointer"
+            />
+            <h1 className="text-bold text-2xl  ml-2">
               {chats?.users.find((item) => item._id !== result._id)?.fullName}
             </h1>
           </div>
+          {/* <div>
+          </div> */}
           <div className="flex items-center">
             <div>
               <Lottie
@@ -202,8 +211,8 @@ const Chat = ({ idChat, setSendMessage, receiveMessage }) => {
              ml-4
           "
           >
-            {
-              // chats?.users.find((item) => item._id !== result._id)?._id &&
+            {/* {
+            // chats?.users.find((item) => item._id !== result._id)?._id &&
               typing && (
                 <div>
                   <Lottie
@@ -220,7 +229,7 @@ const Chat = ({ idChat, setSendMessage, receiveMessage }) => {
                   />
                 </div>
               )
-            }
+            } */}
           </div>
           <div className="w-full p-6  ">
             {dataChat?.map((item) => {

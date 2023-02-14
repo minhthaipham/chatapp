@@ -44,6 +44,17 @@ export const searchUser = createAsyncThunk(
   }
 );
 
+export const editUser = createAsyncThunk(
+  "auth/editUser",
+  async ({ data, id }, { rejectWithValue }) => {
+    try {
+      const response = await api.update(data, id);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 const authSlice = createSlice({
   name: "auth",
   initialState: {
@@ -81,14 +92,7 @@ const authSlice = createSlice({
       state.loading = true;
     },
     [register.fulfilled]: (state, action) => {
-      // state.loading = false;
       localStorage.setItem("user", JSON.stringify({ ...action.payload }));
-
-      // localStorage.setItem("token", action.payload.token);
-      // localStorage.setItem(
-      //   "user",
-      //   JSON.stringify({ ...action.payload.result })
-      // );
       state.user = action.payload;
     },
     [register.rejected]: (state, action) => {
@@ -105,6 +109,15 @@ const authSlice = createSlice({
     [searchUser.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.payload;
+    },
+    [editUser.pending]: (state) => {
+      state.loading = true;
+    },
+    [editUser.fulfilled]: (state, action) => {
+      state.loading = false;
+      localStorage.removeItem("user");
+      localStorage.setItem("user", JSON.stringify({ ...action.payload }));
+      state.user = action.payload;
     },
   },
 });
