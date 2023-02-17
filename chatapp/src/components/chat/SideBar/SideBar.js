@@ -28,6 +28,7 @@ import { Box } from "@mui/system";
 import { useSelector } from "react-redux";
 import * as api from "../../../api";
 import { useSocket } from "../../../context/SocketContext";
+import ModalSidebar from "./ModalSidebar";
 const menu = [
   {
     id: 0,
@@ -61,7 +62,10 @@ const SideBar = ({ setDataTest }) => {
 
   const [onlineUsers, setOnlineUsers] = React.useState([]);
   const [testOnline, setTestOnline] = React.useState([]);
-  console.log("onlineUsers", testOnline);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  // const [open , setOpen] = React.useStateFopen
+
   // console.log("onlineUsers", onlineUsers);
   // console.log("userChat", UserChat);
   React.useEffect(() => {
@@ -84,6 +88,7 @@ const SideBar = ({ setDataTest }) => {
   //     setTestOnline(testUser);
   //   });
   // }, []);
+
   return (
     <div className=" h-full w-full ">
       <div className="flex items-center justify-between px-6 pt-6">
@@ -94,7 +99,7 @@ const SideBar = ({ setDataTest }) => {
           </h1>
         </div>
         <div className="flex items-center">
-          <Fab color="white" aria-label="add" size="small">
+          <Fab color="white" aria-label="add" size="small" onClick={handleOpen}>
             <Add />
           </Fab>
           {/* <MoreVert className="ml-2" /> */}
@@ -141,16 +146,6 @@ const SideBar = ({ setDataTest }) => {
               <ContactPage className="text-white" />
             </div>
           </div>
-          {/* {data.map((user, index) => (
-            <ListUser key={index} user={user} />
-          ))} */}
-          {/* {getChat?.map((user, index) =>
-            user?.users?.map((user, index) => (
-              <div key={index}>
-                <h1>cc</h1>
-              </div>
-            ))
-          )} */}
           {getListChats?.map((user, index) =>
             user?.users?.map(
               (user, index) =>
@@ -166,6 +161,7 @@ const SideBar = ({ setDataTest }) => {
           )}
         </div>
       )}
+      <ModalSidebar open={open} handleClose={handleClose} />
     </div>
   );
 };

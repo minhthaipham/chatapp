@@ -4,7 +4,8 @@ import React from "react";
 import { GIFJSON } from "../../constant";
 import * as api from "../../api";
 import { accessChat, getChat } from "../../redux/reducer/chatSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useSocket } from "../../context/SocketContext";
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
     backgroundColor: "#44b700",
@@ -34,8 +35,10 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 const ListUser = ({ user, setUserChats, onlineUsers }) => {
+  const socket = useSocket();
   const { result } = JSON.parse(localStorage.getItem("user"));
   const dispatch = useDispatch();
+  const { chats } = useSelector((state) => state.chat);
   const handleGetChat = (id) => {
     // try {
     const data = {
@@ -51,6 +54,7 @@ const ListUser = ({ user, setUserChats, onlineUsers }) => {
     // }
     // dispatch(getChat(id));
   };
+
   return (
     <div
       className="mt-3 cursor-pointer hover:bg-zinc-500  px-6 py-2"

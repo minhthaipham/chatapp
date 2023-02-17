@@ -13,7 +13,7 @@ import moment from "moment";
 // import { getMessage, sendMessage } from "../../../redux/reducer/messageSlice";
 // import { getMessages } from "../../../api";
 import * as api from "../../../api";
-const Chat = ({ idChat, setSendMessage, receiveMessage }) => {
+const Chat = ({ idChat }) => {
   const socket = useSocket();
   // const { close, setClose } = React.useContext(AppContext);
   // const { messages } = useSelector((state) => state.message);
@@ -81,12 +81,12 @@ const Chat = ({ idChat, setSendMessage, receiveMessage }) => {
   //   setDataChat(dataChatApi);
   // }, []);
 
-  React.useEffect(() => {
-    // socket.emit("setUser", result);
-    if (receiveMessage?.idChat === idChat) {
-      setDataChat([...dataChat, receiveMessage]);
-    }
-  }, [receiveMessage]);
+  // React.useEffect(() => {
+  //   // socket.emit("setUser", result);
+  //   if (receiveMessage?.idChat === idChat) {
+  //     setDataChat([...dataChat, receiveMessage]);
+  //   }
+  // }, [receiveMessage]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -94,65 +94,76 @@ const Chat = ({ idChat, setSendMessage, receiveMessage }) => {
     const message = {
       idChat,
       content: textMessage,
-      avatar: result.avatar,
     };
+    // setDataChat((prev) => [...prev, message]);
+    // setTextMessage("");
+    // socket.emit("sendMessage", { message, idChat });
     try {
       const { data } = await api.sendMessage(message);
       setDataChat([...dataChat, data]);
+      socket.emit("sendMessage", { data, idChat });
+      // socket.emit("sendMessage", { dataChat, idChat });
       setTextMessage("");
     } catch (error) {
       console.log(error);
     }
-    const receiveId = chats?.users.find((item) => item._id !== result._id)?._id;
-    setSendMessage({
-      ...message,
-      receiveId,
-    });
+    // const receiveId = chats?.users.find((item) => item._id !== result._id)?._id;
+    // setSendMessage({
+    //   ...message,
+    //   receiveId,
+    // });
   };
+
+  React.useEffect(() => {
+    socket.on("receiveMessage", (dataChat) => {
+      if (dataChat?.chat === idChat) {
+        setDataChat((prev) => [...prev, dataChat]);
+      }
+    });
+  }, []);
+
   const fetchDataMessage = async () => {
     try {
       const { data } = await api.getMessages(idChat);
       setDataChat(data);
+      socket.emit("join", idChat);
     } catch (error) {
       console.log(error);
     }
   };
 
   React.useEffect(() => {
-    // const id = {
-    //   id: idChat,
-    // };
-    // if (idChat) {
-    //   dispatch(getMessage(id));
-    // }
     fetchDataMessage();
+    // socket.on("typing-start-server", () => {
+    //   setTyping(true);
+    // });
+    // socket.on("typing-end-server", () => {
+    //   setTyping(false);
+    // });
   }, [idChat]);
+
+  React.useEffect(() => {
+    socket.on("typing-start-server", () => {
+      setTyping(true);
+    });
+    socket.on("typing-end-server", () => {
+      setTyping(false);
+    });
+  }, []);
 
   const handleChange = (e) => {
     setTextMessage(e.target.value);
-    // const idUser = chats?.users.find((item) => item._id !== result._id)?._id;
-    // socket.emit("typing-start", { idUser });
+    socket.emit("typing-start", idChat);
 
-    // setTyping(true);
-    // if (typingTimeout) {
-    //   clearTimeout(typingTimeout);
-    // }
-    // setTypingTimeout(
-    //   setTimeout(() => {
-    //     // socket.emit("typing", "");
-    //     console.log("typing-stop");
-    //     setTyping(false);
-    //   }, 1000)
-    // );
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+    setTypingTimeout(
+      setTimeout(() => {
+        socket.emit("typing-end", idChat);
+      }, 1500)
+    );
   };
-  React.useEffect(() => {
-    socket.on("typing-start-server", (data) => {
-      console.log("typing-start-server", data);
-      if (data === result?._id) {
-        setTyping(true);
-      }
-    });
-  }, [socket]);
 
   return (
     <div className="h-screen">
@@ -197,8 +208,8 @@ const Chat = ({ idChat, setSendMessage, receiveMessage }) => {
                     preserveAspectRatio: "xMidYMid slice",
                   },
                 }}
-                height={50}
-                width={50}
+                height={45}
+                width={45}
               />
             </div>
           </div>
@@ -206,31 +217,7 @@ const Chat = ({ idChat, setSendMessage, receiveMessage }) => {
       </div>
       <div className="bg-blue-900 h-[calc(100%-70px-38px)] ">
         <div className="h-full overflow-y-auto bg-slate-300 flex flex-col-reverse">
-          <div
-            className="absolute 
-             ml-4
-          "
-          >
-            {/* {
-            // chats?.users.find((item) => item._id !== result._id)?._id &&
-              typing && (
-                <div>
-                  <Lottie
-                    options={{
-                      loop: true,
-                      autoplay: true,
-                      animationData: GIFJSON.Typing,
-                      rendererSettings: {
-                        preserveAspectRatio: "xMidYMid slice",
-                      },
-                    }}
-                    height={50}
-                    width={50}
-                  />
-                </div>
-              )
-            } */}
-          </div>
+          <div className="absolute ml-4"></div>
           <div className="w-full p-6  ">
             {dataChat?.map((item) => {
               if (item?.users?._id === result._id) {
@@ -240,6 +227,34 @@ const Chat = ({ idChat, setSendMessage, receiveMessage }) => {
               }
             })}
           </div>
+        </div>
+        <div className="absolute bottom-10 ml-4">
+          {typing && (
+            <div className="flex items-center">
+              <div>
+                <p className="text-white text-lg font-bold">
+                  {
+                    chats?.users.find((item) => item._id !== result._id)
+                      ?.fullName
+                  }{" "}
+                </p>
+              </div>
+              <div>
+                <Lottie
+                  options={{
+                    loop: true,
+                    autoplay: true,
+                    animationData: GIFJSON.Typing,
+                    rendererSettings: {
+                      preserveAspectRatio: "xMidYMid slice",
+                    },
+                  }}
+                  height={50}
+                  width={50}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <div className="h-[30px] w-full flex items-center  ">

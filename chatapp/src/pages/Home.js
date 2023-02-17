@@ -32,7 +32,6 @@ const Home = () => {
   );
   const [sendMessage, setSendMessage] = React.useState(null);
   const [receiveMessage, setReceiveMessage] = React.useState(null);
-  // console.log("receiveMessage", receiveMessage);
   const { isOpenSideBar } = useSelector((state) => state.modal);
   const dispatch = useDispatch();
   const dataUsers = [
@@ -47,18 +46,18 @@ const Home = () => {
       avatar: "https://i.pravatar.cc/150?img=2",
     },
   ];
-  React.useEffect(() => {
-    if (sendMessage !== null) {
-      socket.emit("sendMessage", sendMessage);
-    }
-  }, [sendMessage]);
+  // React.useEffect(() => {
+  //   if (sendMessage !== null) {
+  //     socket.emit("sendMessage", sendMessage);
+  //   }
+  // }, [sendMessage]);
 
-  React.useEffect(() => {
-    socket.on("receiveMessage", (data) => {
-      setReceiveMessage(data);
-      console.log("data", data);
-    });
-  }, []);
+  // React.useEffect(() => {
+  //   socket.on("receiveMessage", (data) => {
+  //     setReceiveMessage(data);
+  //     console.log("data", data);
+  //   });
+  // }, []);
 
   const handleClick = () => {
     //   dispatch(closeSideBar());
@@ -105,8 +104,8 @@ const Home = () => {
             {chats ? (
               <Chat
                 idChat={chats?._id}
-                setSendMessage={setSendMessage}
-                receiveMessage={receiveMessage}
+                // setSendMessage={setSendMessage}
+                // receiveMessage={receiveMessage}
               />
             ) : (
               <div className="flex justify-center items-center h-screen flex-col">
