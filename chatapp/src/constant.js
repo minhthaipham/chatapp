@@ -10,4 +10,5 @@ export const GIFJSON = {
   Robot: require("./asset/Json/robot.json"),
   Welcome: require("./asset/Json/welcome.json"),
   Typing: require("./asset/Json/typing.json"),
+  Camera: require("./asset/Json/camera.json"),
 };

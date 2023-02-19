@@ -33,6 +33,15 @@ app.use("/message", message);
 let users = [];
 io.on("connection", (socket) => {
   console.log("a user connected");
+  socket.on("online", (userId) => {
+    if (!users.includes(userId)) {
+      users.push({
+        userId: userId,
+        socketId: socket.id,
+      });
+    }
+    io.emit("getUsers", users);
+  });
 
   socket.on("join", (idChat) => {
     socket.join(idChat);
@@ -50,7 +59,10 @@ io.on("connection", (socket) => {
     // socket.broadcast.emit("typing-end-server");
     socket.to(idChat).emit("typing-end-server");
   });
-  socket.on("disconnect", () => console.log("user disconnected"));
+  socket.on("disconnect", () => {
+    users = users.filter((user) => user.socketId !== socket.id);
+    io.emit("getUsers", users);
+  });
 
   // socket.on("newUser", (userId) => {
   //   if (!users.includes(userId)) {

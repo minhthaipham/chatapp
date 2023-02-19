@@ -2,7 +2,7 @@ import Message from "../model/message.js";
 import Chat from "../model/chat.js";
 import User from "../model/auth.js";
 export const sendMessage = async (req, res) => {
-  const { idChat, content } = req.body;
+  const { idChat, content, nameUser } = req.body;
   try {
     // const message = await Message.create({
     //   idChat,
@@ -20,6 +20,7 @@ export const sendMessage = async (req, res) => {
       chat: idChat,
       content,
       users: req.userId,
+      nameUser,
     });
     await message.save();
     await Chat.findByIdAndUpdate(

@@ -3,7 +3,7 @@ import React from "react";
 // import Lottie from "lottie-react";
 import { GIFJSON } from "../../constant";
 import * as api from "../../api";
-import { accessChat, getChat } from "../../redux/reducer/chatSlice";
+import { accessChat, getCurrentChat } from "../../redux/reducer/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useSocket } from "../../context/SocketContext";
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -34,11 +34,10 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
     },
   },
 }));
-const ListUser = ({ user, setUserChats, onlineUsers }) => {
-  const socket = useSocket();
+const ListUser = ({ user, onlineUsers, item }) => {
+  console.log("user", user);
   const { result } = JSON.parse(localStorage.getItem("user"));
   const dispatch = useDispatch();
-  const { chats } = useSelector((state) => state.chat);
   const handleGetChat = (id) => {
     // try {
     const data = {
@@ -46,20 +45,42 @@ const ListUser = ({ user, setUserChats, onlineUsers }) => {
       idb: id,
     };
 
-    dispatch(accessChat(data));
-    // const chat = await api.accessChat(data);
-    // setUserChats(chat.data);
-    // } catch (err) {
-    //   console.log(err);
-    // }
-    // dispatch(getChat(id));
+    // dispatch(accessChat(data));
+    dispatch(getCurrentChat(id));
   };
 
+  const LatestMessage = () => {
+    // item?.latestMessage === null
+    // ? ""
+    // : item?.latestMessage?.users === result?._id
+    // ? "Bạn: " + item?.latestMessage?.content
+    // : item?.latestMessage?.nameUser +
+    //   ":" +
+    //   item?.latestMessage?.content
+    if (item?.latestMessage === null || user?.latestMessage === null) {
+      return "";
+    } else if (
+      item?.latestMessage?.users === result?._id ||
+      user?.latestMessage?.users === result?._id
+    ) {
+      return (
+        "Bạn : " + item?.latestMessage?.content || user?.latestMessage?.content
+      );
+    } else {
+      return (
+        item?.latestMessage?.nameUser + " : " + item?.latestMessage?.content ||
+        user?.latestMessage?.nameUser + " : " + user?.latestMessage?.content
+      );
+    }
+  };
   return (
     <div
-      className="mt-3 cursor-pointer hover:bg-zinc-500  px-6 py-2"
+      className="mt-3 cursor-pointer hover:bg-[rgba(0,0,0,0.1)] px-6 py-2"
+      // onClick={() => {
+      //   handleGetChat(user._id);
+      // }}
       onClick={() => {
-        handleGetChat(user._id);
+        handleGetChat(item?._id || user?._id);
       }}
     >
       <div className="flex items-center">
@@ -70,14 +91,39 @@ const ListUser = ({ user, setUserChats, onlineUsers }) => {
             variant="dot"
             className="mr-2"
           >
-            <Avatar src={user?.avatar} />
+            <Avatar src={user?.avatar || user?.image} />
           </StyledBadge>
         ) : (
-          <Avatar src={user?.avatar} className="mr-2" />
+          <Avatar src={user?.avatar || user?.image} className="mr-2" />
         )}
         <div>
           {/* <h1 className="text-white text-bold text-xl">{user?.fullName}</h1> */}
-          <p className="text-white text-bold text-xl  ">{user?.fullName}</p>
+          <p className="text-white text-bold text-xl  ">
+            {user?.fullName || user?.chatName}
+          </p>
+          <p className="text-white text-bold text-sm  opacity-[0.7]">
+            {/* {
+            item?.latestMessage?.users === result?._id
+              ? "Bạn :" + item?.latestMessage?.content
+              : item?.latestMessage?.nameUser +
+                ":" +
+                item?.latestMessage?.content
+                
+                } */}
+            {/* {
+                  if item.latestMessage === null show nothing 
+                  else if item.latestMessage.users === result._id show "Bạn: " + item.latestMessage.content
+                } */}
+
+            {/* {item?.latestMessage === null
+              ? ""
+              : item?.latestMessage?.users === result?._id
+              ? "Bạn: " + item?.latestMessage?.content
+              : item?.latestMessage?.nameUser +
+                ":" +
+                item?.latestMessage?.content} */}
+            <LatestMessage />
+          </p>
         </div>
       </div>
     </div>

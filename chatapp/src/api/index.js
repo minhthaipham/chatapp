@@ -17,7 +17,12 @@ export const update = (data, id) => API.patch(`/auth/update/${id}`, data, id);
 export const getUser = (data) => API.get(`/chat/user?fullName=${data}`);
 export const listChatOfUser = () => API.get(`/chat`);
 export const accessChat = (data) => API.post(`/chat`, data);
-// export const getChat = (id) => API.get(`/chat/getChat`, id);
+export const getChat = (id) => API.get(`/chat/getChat/${id}`);
+
+// group
+
+export const createGroup = (data) => API.post(`/chat/create`, data);
+
 // message
 export const sendMessage = (data) => API.post(`/message/sendMessage`, data);
 export const getMessages = (id) => API.get(`/message/getMessages/${id}`, id);

@@ -58,12 +58,10 @@ const SideBar = ({ setDataTest }) => {
   const [getListChats, setGetListChats] = React.useState([]);
   const [userChats, setUserChats] = React.useState(null);
   const { isOpenSideBar } = useSelector((state) => state.modal);
-  const { chats } = useSelector((state) => state.chat);
-
   const [onlineUsers, setOnlineUsers] = React.useState([]);
-  const [testOnline, setTestOnline] = React.useState([]);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const { chats } = useSelector((state) => state.chat);
   // const [open , setOpen] = React.useStateFopen
 
   // console.log("onlineUsers", onlineUsers);
@@ -77,17 +75,11 @@ const SideBar = ({ setDataTest }) => {
     fetchChat();
   }, [chats]);
   React.useEffect(() => {
-    socket.emit("newUser", result?._id);
+    socket.emit("online", result?._id);
     socket.on("getUsers", (user) => {
       setOnlineUsers(user);
     });
   }, []);
-  // React.useEffect(() => {
-  //   socket.emit("newUser", result);
-  //   socket.on("connected", (testUser) => {
-  //     setTestOnline(testUser);
-  //   });
-  // }, []);
 
   return (
     <div className=" h-full w-full ">
@@ -146,17 +138,21 @@ const SideBar = ({ setDataTest }) => {
               <ContactPage className="text-white" />
             </div>
           </div>
-          {getListChats?.map((user, index) =>
-            user?.users?.map(
-              (user, index) =>
-                user?._id !== result?._id && (
-                  <ListUser
-                    key={index}
-                    user={user}
-                    setUserChats={setUserChats}
-                    onlineUsers={onlineUsers}
-                  />
-                )
+          {getListChats?.map((item, index) =>
+            !item?.isGroupChat ? (
+              item?.users?.map(
+                (user, index) =>
+                  user?._id !== result?._id && (
+                    <ListUser
+                      key={index}
+                      user={user}
+                      onlineUsers={onlineUsers}
+                      item={item}
+                    />
+                  )
+              )
+            ) : (
+              <ListUser key={index} user={item} onlineUsers={onlineUsers} />
             )
           )}
         </div>

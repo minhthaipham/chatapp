@@ -6,6 +6,7 @@ const chatSchema = mongoose.Schema(
     isAppear: { type: Boolean, default: false },
     isGroupChat: { type: Boolean, default: false },
     users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    image: { type: String },
     latestMessage: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Message",

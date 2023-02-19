@@ -53,11 +53,12 @@ export const listChatOfUser = async (req, res) => {
 };
 
 export const getChat = async (req, res) => {
-  const { id } = req.body;
-  console.log(id);
+  // const data = req.body;
+  // console.log(data);
+  console.log(req.params.id);
   try {
     const chat = await Chat.findOne({
-      _id: id,
+      _id: req.params.id,
     })
       .populate("users", "-password")
       .populate("latestMessage")
@@ -86,25 +87,40 @@ export const getUser = async (req, res, next) => {
 };
 export const createGroupChat = async (req, res) => {
   try {
-    // const { userId, chatName } = req.body;
-    let users = JSON.parse(req.body.users);
-    console.log(typeof users);
-    console.log(users.length);
-    if (users.length < 2) {
+    const { id, image, chatName } = req.body;
+    console.log(image);
+    // // const { userId, chatName } = req.body;
+    // let users = JSON.parse(req.body.users);
+    // console.log(typeof users);
+    // console.log(users.length);
+    if (id.length < 2) {
       return res
         .status(400)
         .json({ message: "Please select at least 2 users" });
     }
-    users.push(req.userId);
+
+    id.push(req.userId);
+
     // const newChat = new Chat({
-    //   users,
-    //   chatName: req.body.chatName,
+    //   users: id,
+    //   chatName: "Group Chat",
     //   isGroupChat: true,
+    //   groupAdmin: req.userId,
     // });
-    // const savedChat = await newChat.save();
+    // await newChat.save();
+
+    // users.push(req.userId);
+    // // const newChat = new Chat({
+    // //   users,
+    // //   chatName: req.body.chatName,
+    // //   isGroupChat: true,
+    // // });
+    // // const savedChat = await newChat.save();
     const newChat = await Chat.create({
-      users,
-      chatName: req.body.chatName,
+      users: id,
+      // chatName: req.body.chatName,
+      image,
+      chatName,
       isGroupChat: true,
       groupAdmin: req.userId,
     });
@@ -116,7 +132,6 @@ export const createGroupChat = async (req, res) => {
       .populate("users", "-password")
       .populate("latestMessage")
       .populate("groupAdmin", "-password");
-
     res.status(200).json(updateChat);
   } catch (err) {
     res.status(500).json({ message: err.message });

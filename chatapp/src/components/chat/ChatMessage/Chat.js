@@ -94,6 +94,7 @@ const Chat = ({ idChat }) => {
     const message = {
       idChat,
       content: textMessage,
+      nameUser: result.fullName,
     };
     // setDataChat((prev) => [...prev, message]);
     // setTextMessage("");
@@ -161,7 +162,7 @@ const Chat = ({ idChat }) => {
     setTypingTimeout(
       setTimeout(() => {
         socket.emit("typing-end", idChat);
-      }, 1500)
+      }, 1000)
     );
   };
 
@@ -172,13 +173,17 @@ const Chat = ({ idChat }) => {
         <div className="flex items-center justify-between p-5">
           <div className="flex item-center justify-center">
             <Avatar
-              src={chats?.users.find((item) => item._id !== result._id)?.avatar}
+              src={
+                chats?.image ||
+                chats?.users.find((item) => item._id !== result._id)?.avatar
+              }
               size={50}
               onClick={() => dispatch(closeModal())}
               className="cursor-pointer"
             />
             <h1 className="text-bold text-2xl  ml-2">
-              {chats?.users.find((item) => item._id !== result._id)?.fullName}
+              {chats?.chatName ||
+                chats?.users.find((item) => item._id !== result._id)?.fullName}
             </h1>
           </div>
           {/* <div>

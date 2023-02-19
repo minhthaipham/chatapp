@@ -17,7 +17,7 @@ router.put("/add", auth, addMember);
 router.put("/remove", auth, removeMember);
 // router.post("/", auth, accessChat);
 router.post("/", accessChat);
+router.get("/getChat/:id", auth, getChat);
 router.get("/", auth, listChatOfUser);
-router.get("/getChat", auth, getChat);
 router.get("/user", auth, getUser);
 export default router;
