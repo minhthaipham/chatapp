@@ -19,7 +19,7 @@ export const accessChat = async (req, res) => {
     try {
       const newChat = new Chat({
         users: [ida, idb],
-        chatName: "chatName",
+        // chatName: "chatName",
         isGroupChat: false,
       });
       await newChat.save();

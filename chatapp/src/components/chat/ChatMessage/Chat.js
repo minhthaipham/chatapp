@@ -1,4 +1,9 @@
-import { AttachFile, InsertEmoticon, Send } from "@mui/icons-material";
+import {
+  ArrowBack,
+  AttachFile,
+  InsertEmoticon,
+  Send,
+} from "@mui/icons-material";
 import { Avatar, Button } from "@mui/material";
 import React from "react";
 import { GIFJSON } from "../../../constant";
@@ -13,6 +18,7 @@ import moment from "moment";
 // import { getMessage, sendMessage } from "../../../redux/reducer/messageSlice";
 // import { getMessages } from "../../../api";
 import * as api from "../../../api";
+import { back } from "../../../redux/reducer/chatSlice";
 const Chat = ({ idChat }) => {
   const socket = useSocket();
   // const { close, setClose } = React.useContext(AppContext);
@@ -24,8 +30,10 @@ const Chat = ({ idChat }) => {
   const [dataChat, setDataChat] = React.useState([]);
   const [textMessage, setTextMessage] = React.useState("");
   const { chats } = useSelector((state) => state.chat);
+  console.log("chats", chats);
   const [typing, setTyping] = React.useState(false);
   const [typingTimeout, setTypingTimeout] = React.useState(null);
+  const { check } = useSelector((state) => state.chat);
   // console.log(isOpen);
   const dataChatApi = [
     {
@@ -119,6 +127,8 @@ const Chat = ({ idChat }) => {
     socket.on("receiveMessage", (dataChat) => {
       if (dataChat?.chat === idChat) {
         setDataChat((prev) => [...prev, dataChat]);
+      } else {
+        console.log("khong phai");
       }
     });
   }, []);
@@ -165,13 +175,23 @@ const Chat = ({ idChat }) => {
       }, 1000)
     );
   };
-
+  const handleBack = () => {
+    if (check) {
+      dispatch(back());
+    }
+  };
   return (
     <div className="h-screen">
       {/* //header */}
       <div className="bg-slate-50 shadow-sm h-[70px]">
         <div className="flex items-center justify-between p-5">
-          <div className="flex item-center justify-center">
+          <div className="flex items-center ">
+            <div
+              className="block md:hidden pr-2 cursor-pointer"
+              onClick={handleBack}
+            >
+              <ArrowBack />
+            </div>
             <Avatar
               src={
                 chats?.image ||

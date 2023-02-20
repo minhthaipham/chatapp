@@ -40,6 +40,7 @@ const chatSlice = createSlice({
   name: "chat",
   initialState: {
     chats: null,
+    check: false,
     loading: false,
     error: null,
   },
@@ -49,6 +50,9 @@ const chatSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
+    back: (state, action) => {
+      state.check = false;
+    },
   },
   extraReducers: {
     [accessChat.pending]: (state, action) => {
@@ -57,6 +61,7 @@ const chatSlice = createSlice({
     [accessChat.fulfilled]: (state, action) => {
       state.loading = false;
       state.chats = action.payload;
+      state.check = true;
     },
     [accessChat.rejected]: (state, action) => {
       state.loading = false;
@@ -79,6 +84,7 @@ const chatSlice = createSlice({
     [getCurrentChat.fulfilled]: (state, action) => {
       state.loading = false;
       state.chats = action.payload;
+      state.check = true;
     },
     [getCurrentChat.rejected]: (state, action) => {
       state.loading = false;
@@ -86,5 +92,5 @@ const chatSlice = createSlice({
     },
   },
 });
-export const { logout } = chatSlice.actions;
+export const { logout, back } = chatSlice.actions;
 export default chatSlice.reducer;

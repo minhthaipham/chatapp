@@ -21,19 +21,14 @@ const Home = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isOpen } = useSelector((state) => state.modal);
-  const [dataSearch, setDataSearch] = React.useState([]);
-  const [idUSerChat, setIdUSerChat] = React.useState([]);
-  const [getChat, setGetChat] = React.useState([]);
-  const [dataTest, setDataTest] = React.useState([]);
-  const [online, setOnline] = React.useState([]);
   const { chats } = useSelector((state) => state.chat);
   const otherUser = chats?.users?.find(
     (users) => users._id !== user?.result._id
   );
-  const [sendMessage, setSendMessage] = React.useState(null);
-  const [receiveMessage, setReceiveMessage] = React.useState(null);
   const { isOpenSideBar } = useSelector((state) => state.modal);
   const dispatch = useDispatch();
+  const { check } = useSelector((state) => state.chat);
+  console.log("check", check);
   const dataUsers = [
     {
       id: 1,
@@ -85,28 +80,33 @@ const Home = () => {
       ) : (
         <div className="grid grid-cols-4 " onClick={handleClick}>
           <div
-            // className="col-span-4 md:col-span-1 h-screen  bg-blue-400 "
             className={
-              chats
-                ? "col-span-1 md:col-span-1 h-screen  bg-blue-400 "
-                : "col-span-4 md:col-span-1 h-screen  bg-blue-400 "
+              // check
+              // ? "col-span-1 md:col-span-1 h-screen  bg-blue-400 "
+              // : "col-span-4 md:col-span-1 h-screen  bg-blue-400 "
+              // `${
+              //   check ? "hidden" : "col-span-4"
+              // } md:col-span-1 h-screen  bg-blue-400`
+              check
+                ? "hidden md:block col-span-1 h-screen bg-blue-400"
+                : "col-span-4 md:col-span-1 h-screen  bg-blue-400"
             }
           >
-            <SideBar setDataTest={setDataTest} />
+            {<SideBar />}
           </div>
           <div
             className={
-              isOpen && chats
-                ? "col-span-2 md:block hidden"
-                : "col-span-3 md:block "
+              // isOpen && chats
+              //   ? "col-span 2 md:block hidden"
+              //   : " col-span-4 md:block "
+              // check ? "col-span-4 md:block" : "col-span-3"
+              // "col-span-3"
+              // check ? "col-span-4 md:col-span-3" : "col-span-4 md:col-span-3"
+              isOpen ? "col-span-4 md:col-span-2" : "col-span-4 md:col-span-3"
             }
           >
-            {chats ? (
-              <Chat
-                idChat={chats?._id}
-                // setSendMessage={setSendMessage}
-                // receiveMessage={receiveMessage}
-              />
+            {check ? (
+              <Chat idChat={chats?._id} />
             ) : (
               <div className="flex justify-center items-center h-screen flex-col">
                 <h1 className="text-2xl font-bold text-gray-700">

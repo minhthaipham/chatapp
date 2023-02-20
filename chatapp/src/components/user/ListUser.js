@@ -35,7 +35,6 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 const ListUser = ({ user, onlineUsers, item }) => {
-  console.log("user", user);
   const { result } = JSON.parse(localStorage.getItem("user"));
   const dispatch = useDispatch();
   const handleGetChat = (id) => {
@@ -50,27 +49,27 @@ const ListUser = ({ user, onlineUsers, item }) => {
   };
 
   const LatestMessage = () => {
-    // item?.latestMessage === null
-    // ? ""
-    // : item?.latestMessage?.users === result?._id
-    // ? "Bạn: " + item?.latestMessage?.content
-    // : item?.latestMessage?.nameUser +
-    //   ":" +
-    //   item?.latestMessage?.content
-    if (item?.latestMessage === null || user?.latestMessage === null) {
-      return "";
-    } else if (
-      item?.latestMessage?.users === result?._id ||
-      user?.latestMessage?.users === result?._id
-    ) {
-      return (
-        "Bạn : " + item?.latestMessage?.content || user?.latestMessage?.content
-      );
+    if (item?.latestMessage) {
+      if (item?.latestMessage === null || user?.latestMessage === null) {
+        return "";
+      } else if (
+        item?.latestMessage?.users === result?._id ||
+        user?.latestMessage?.users === result?._id
+      ) {
+        return (
+          "Bạn : " + item?.latestMessage?.content ||
+          user?.latestMessage?.content
+        );
+      } else {
+        return (
+          item?.latestMessage?.nameUser +
+            " : " +
+            item?.latestMessage?.content ||
+          user?.latestMessage?.nameUser + " : " + user?.latestMessage?.content
+        );
+      }
     } else {
-      return (
-        item?.latestMessage?.nameUser + " : " + item?.latestMessage?.content ||
-        user?.latestMessage?.nameUser + " : " + user?.latestMessage?.content
-      );
+      return "";
     }
   };
   return (
@@ -102,26 +101,6 @@ const ListUser = ({ user, onlineUsers, item }) => {
             {user?.fullName || user?.chatName}
           </p>
           <p className="text-white text-bold text-sm  opacity-[0.7]">
-            {/* {
-            item?.latestMessage?.users === result?._id
-              ? "Bạn :" + item?.latestMessage?.content
-              : item?.latestMessage?.nameUser +
-                ":" +
-                item?.latestMessage?.content
-                
-                } */}
-            {/* {
-                  if item.latestMessage === null show nothing 
-                  else if item.latestMessage.users === result._id show "Bạn: " + item.latestMessage.content
-                } */}
-
-            {/* {item?.latestMessage === null
-              ? ""
-              : item?.latestMessage?.users === result?._id
-              ? "Bạn: " + item?.latestMessage?.content
-              : item?.latestMessage?.nameUser +
-                ":" +
-                item?.latestMessage?.content} */}
             <LatestMessage />
           </p>
         </div>
