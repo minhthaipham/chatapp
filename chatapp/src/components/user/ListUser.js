@@ -44,15 +44,12 @@ const ListUser = ({ user, onlineUsers, item }) => {
       idb: id,
     };
 
-    // dispatch(accessChat(data));
     dispatch(getCurrentChat(id));
   };
 
   const LatestMessage = () => {
-    if (item?.latestMessage) {
-      if (item?.latestMessage === null || user?.latestMessage === null) {
-        return "";
-      } else if (
+    if (item?.latestMessage || user?.latestMessage === null) {
+      if (
         item?.latestMessage?.users === result?._id ||
         user?.latestMessage?.users === result?._id
       ) {
@@ -101,7 +98,7 @@ const ListUser = ({ user, onlineUsers, item }) => {
             {user?.fullName || user?.chatName}
           </p>
           <p className="text-white text-bold text-sm  opacity-[0.7]">
-            <LatestMessage />
+            {LatestMessage()}
           </p>
         </div>
       </div>

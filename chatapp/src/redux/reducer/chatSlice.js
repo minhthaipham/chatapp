@@ -36,6 +36,18 @@ export const getCurrentChat = createAsyncThunk(
     }
   }
 );
+
+export const reNameGroup = createAsyncThunk(
+  "chat/reNameGroup",
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await api.reNameGroup(data);
+      return res.data;
+    } catch (e) {
+      return rejectWithValue(e.response.data);
+    }
+  }
+);
 const chatSlice = createSlice({
   name: "chat",
   initialState: {
@@ -87,6 +99,17 @@ const chatSlice = createSlice({
       state.check = true;
     },
     [getCurrentChat.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    [reNameGroup.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [reNameGroup.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.chats = action.payload;
+    },
+    [reNameGroup.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },

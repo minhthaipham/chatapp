@@ -19,6 +19,8 @@ import moment from "moment";
 // import { getMessages } from "../../../api";
 import * as api from "../../../api";
 import { back } from "../../../redux/reducer/chatSlice";
+import SideBarMenu from "../SideBar/SideBarMenu";
+import ChatGroupMenu from "./ChatGroup/ChatGroupMenu";
 const Chat = ({ idChat }) => {
   const socket = useSocket();
   // const { close, setClose } = React.useContext(AppContext);
@@ -30,72 +32,10 @@ const Chat = ({ idChat }) => {
   const [dataChat, setDataChat] = React.useState([]);
   const [textMessage, setTextMessage] = React.useState("");
   const { chats } = useSelector((state) => state.chat);
-  console.log("chats", chats);
   const [typing, setTyping] = React.useState(false);
   const [typingTimeout, setTypingTimeout] = React.useState(null);
   const { check } = useSelector((state) => state.chat);
-  // console.log(isOpen);
-  const dataChatApi = [
-    {
-      id: 1,
-      message: "Hellodshsdkjhs",
-      isMe: true,
-      time: "12:00",
-    },
-    {
-      id: 2,
-      message: "Hellosssssssssssssssssssssssssssssssss",
-      isMe: false,
-      time: "12:00",
-    },
-    {
-      id: 3,
-      message: "Hellssssssssssssssssssssssssssssssssssso",
-      isMe: true,
-      time: "12:00",
-    },
-    {
-      id: 4,
-      message: "Hellossssssssssssssssssssssssssssssssssssssssssssss",
-      isMe: false,
-      time: "12:00",
-    },
-    {
-      id: 5,
-      message: "Hessssssssssssssssssssssssssssssssssssssssssssssssssllo",
-      isMe: true,
-      time: "12:00",
-    },
-    {
-      id: 6,
-      message: "Helssssssssssssssssssssssssssssssssssssssssssssssssslo",
-      isMe: false,
-      time: "12:00",
-    },
-    {
-      id: 7,
-      message: "Helssssssssssssssssssssssssssssssssssssssssssssssssslo",
-      isMe: false,
-      time: "12:00",
-    },
-    {
-      id: 8,
-      message: "Helssssssssssssssssssssssssssssssssssssssssssssssssslo",
-      isMe: true,
-      time: "12:00",
-    },
-  ];
-  // React.useEffect(() => {
-  //   setDataChat(dataChatApi);
-  // }, []);
-
-  // React.useEffect(() => {
-  //   // socket.emit("setUser", result);
-  //   if (receiveMessage?.idChat === idChat) {
-  //     setDataChat([...dataChat, receiveMessage]);
-  //   }
-  // }, [receiveMessage]);
-
+  const inputRef = React.useRef(null);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -180,6 +120,12 @@ const Chat = ({ idChat }) => {
       dispatch(back());
     }
   };
+
+  React.useEffect(() => {
+    if (check) {
+      inputRef.current.focus();
+    }
+  }, [check]);
   return (
     <div className="h-screen">
       {/* //header */}
@@ -219,8 +165,8 @@ const Chat = ({ idChat }) => {
                     preserveAspectRatio: "xMidYMid slice",
                   },
                 }}
-                height={50}
-                width={50}
+                height={45}
+                width={45}
               />
             </div>
             <div>
@@ -237,6 +183,7 @@ const Chat = ({ idChat }) => {
                 width={45}
               />
             </div>
+            <div>{chats?.isGroupChat && <ChatGroupMenu />}</div>
           </div>
         </div>
       </div>
@@ -291,6 +238,7 @@ const Chat = ({ idChat }) => {
               placeholder="Type a message"
               value={textMessage}
               onChange={handleChange}
+              ref={inputRef}
             />
             <div className="absolute right-0 top-[50%] transform -translate-y-1/2">
               <InsertEmoticon className=" rounded-md text-black mr-3" />

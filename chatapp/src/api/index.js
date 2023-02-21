@@ -26,3 +26,4 @@ export const createGroup = (data) => API.post(`/chat/create`, data);
 // message
 export const sendMessage = (data) => API.post(`/message/sendMessage`, data);
 export const getMessages = (id) => API.get(`/message/getMessages/${id}`, id);
+export const reNameGroup = (data) => API.put(`/chat/rename`, data);

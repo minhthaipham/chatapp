@@ -88,11 +88,8 @@ export const getUser = async (req, res, next) => {
 export const createGroupChat = async (req, res) => {
   try {
     const { id, image, chatName } = req.body;
-    console.log(image);
-    // // const { userId, chatName } = req.body;
-    // let users = JSON.parse(req.body.users);
-    // console.log(typeof users);
-    // console.log(users.length);
+    console.log(chatName);
+
     if (id.length < 2) {
       return res
         .status(400)
@@ -100,22 +97,6 @@ export const createGroupChat = async (req, res) => {
     }
 
     id.push(req.userId);
-
-    // const newChat = new Chat({
-    //   users: id,
-    //   chatName: "Group Chat",
-    //   isGroupChat: true,
-    //   groupAdmin: req.userId,
-    // });
-    // await newChat.save();
-
-    // users.push(req.userId);
-    // // const newChat = new Chat({
-    // //   users,
-    // //   chatName: req.body.chatName,
-    // //   isGroupChat: true,
-    // // });
-    // // const savedChat = await newChat.save();
     const newChat = await Chat.create({
       users: id,
       // chatName: req.body.chatName,
@@ -193,3 +174,5 @@ export const removeMember = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+export const deleteGroup = async (req, res) => {};

@@ -66,7 +66,6 @@ const SideBar = () => {
   const handleClose = () => setOpen(false);
   const { chats } = useSelector((state) => state.chat);
   const { check } = useSelector((state) => state.chat);
-  console.log("check", check);
   // const [open , setOpen] = React.useStateFopen
 
   // console.log("onlineUsers", onlineUsers);

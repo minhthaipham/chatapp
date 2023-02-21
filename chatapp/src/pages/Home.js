@@ -28,7 +28,6 @@ const Home = () => {
   const { isOpenSideBar } = useSelector((state) => state.modal);
   const dispatch = useDispatch();
   const { check } = useSelector((state) => state.chat);
-  console.log("check", check);
   const dataUsers = [
     {
       id: 1,
@@ -142,7 +141,7 @@ const Home = () => {
             )}
           </div>
           <div className={isOpen ? "col-span-1 md:block hidden" : "hidden"}>
-            <Detail otherUser={otherUser} />
+            <Detail otherUser={otherUser} chats={chats} />
           </div>
         </div>
       )}

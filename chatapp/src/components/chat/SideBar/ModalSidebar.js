@@ -44,7 +44,7 @@ const ModalSidebar = ({ open, handleClose }) => {
   const dispatch = useDispatch();
   const { users } = useSelector((state) => state.auth);
   const [members, setMembers] = React.useState([]);
-  const [nameGroup, setNameGroup] = React.useState("");
+  const [chatName, setChatName] = React.useState("");
   const [addMembers, setAddMembers] = React.useState("");
   const [listUser, setListUser] = React.useState([]);
   const [timeOut, setTimeOut] = React.useState(null);
@@ -109,7 +109,7 @@ const ModalSidebar = ({ open, handleClose }) => {
         const data = {
           id,
           image: dt.url.toString(),
-          nameGroup,
+          chatName,
         };
         dispatch(createGroup(data));
         handleClose();
@@ -126,7 +126,7 @@ const ModalSidebar = ({ open, handleClose }) => {
       <div
         className="absolute 
         top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
-        w-[500px] bg-white  rounded-md shadow-24 p-4
+        w-[500px] bg-white  rounded-md shadow-24 p-4 
       "
       >
         <Typography
@@ -222,7 +222,8 @@ const ModalSidebar = ({ open, handleClose }) => {
               marginTop: 2,
               marginLeft: 2,
             }}
-            onChange={(e) => setNameGroup(e.target.value)}
+            onChange={(e) => setChatName(e.target.value)}
+            value={chatName}
           />
         </div>
         <TextField

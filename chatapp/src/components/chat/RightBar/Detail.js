@@ -5,12 +5,17 @@ import {
   LocationSearching,
   PhoneIphone,
 } from "@mui/icons-material";
-import { Avatar, AvatarGroup } from "@mui/material";
+import { Avatar, AvatarGroup, Tooltip } from "@mui/material";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { closeModal } from "../../../redux/reducer/modalSlice";
-const Detail = ({ otherUser }) => {
+import ModalImage from "./ModalImage";
+const Detail = ({ otherUser, chats }) => {
+  console.log("chats", chats);
   const dispatch = useDispatch();
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleCloseModal = () => setOpen(false);
   const handleClose = () => {
     dispatch(closeModal());
   };
@@ -23,15 +28,19 @@ const Detail = ({ otherUser }) => {
         <Avatar
           // src="https://i.pinimg.com/236x/19/23/6a/19236afdd84bc24253fa074bc27c9b64.jpg"
           // src={user?.result?.avatar}
-          src={otherUser?.avatar}
+          src={chats?.image || otherUser?.avatar}
           sx={{ width: "200px", height: "200px" }}
+          onClick={handleOpen}
+          className="cursor-pointer"
         />
-        <h1 className="text-bold text-2xl mt-3">{otherUser?.fullName}</h1>
+        <h1 className="text-bold text-2xl mt-3">
+          {chats?.chatName || otherUser?.fullName}
+        </h1>
         {/* <p className="text-sm text-gray-400">Hello</p> */}
       </div>
       <div className="mt-5 flex items-center">
         <LocationSearching className="text-gray-400" />
-        <p className="text-sm ml-2"> {otherUser?.address} </p>
+        <p className="text-sm ml-2"> {"" || otherUser?.address} </p>
       </div>
       <div className="mt-5 flex items-center">
         <PhoneIphone className="text-gray-400" />
@@ -41,17 +50,35 @@ const Detail = ({ otherUser }) => {
         <Email className="text-gray-400" />
         <p className="text-sm ml-2"> {otherUser?.email}</p>
       </div>
-      <h1 className="mt-5">Media</h1>
-      <div>
-        <AvatarGroup max={4}>
-          <Avatar src="https://i.pinimg.com/236x/19/23/6a/19236afdd84bc24253fa074bc27c9b64.jpg" />
-          <Avatar src="https://i.pinimg.com/236x/19/23/6a/19236afdd84bc24253fa074bc27c9b64.jpg" />
-          <Avatar src="https://i.pinimg.com/236x/19/23/6a/19236afdd84bc24253fa074bc27c9b64.jpg" />
-          <Avatar src="https://i.pinimg.com/236x/19/23/6a/19236afdd84bc24253fa074bc27c9b64.jpg" />
-          <Avatar src="https://i.pinimg.com/236x/19/23/6a/19236afdd84bc24253fa074bc27c9b64.jpg" />
-          <Avatar src="https://i.pinimg.com/236x/19/23/6a/19236afdd84bc24253fa074bc27c9b64.jpg" />
-        </AvatarGroup>
-      </div>
+      {chats?.isGroupChat && (
+        <div>
+          <h1 className="mt-5">Members</h1>
+          <div>
+            <AvatarGroup max={3}>
+              {chats?.users.map((item) => (
+                <Tooltip
+                  title={item.fullName}
+                  placement="top"
+                  key={item._id}
+                  className="cursor-pointer"
+                >
+                  <Avatar
+                    src={item.avatar}
+                    alt={item.fullName}
+                    sx={{ width: "40px", height: "40px" }}
+                  />
+                </Tooltip>
+              ))}
+            </AvatarGroup>
+          </div>
+        </div>
+      )}
+
+      <ModalImage
+        open={open}
+        handleCloseModal={handleCloseModal}
+        avatar={chats?.image || otherUser?.avatar}
+      />
     </div>
   );
 };
