@@ -15,12 +15,12 @@ export const accessChat = createAsyncThunk(
 
 export const createGroup = createAsyncThunk(
   "chat/createGroup",
-  async (data, { rejectWithValue }) => {
+  async ({ data, toast }, { rejectWithValue }) => {
     try {
       const res = await api.createGroup(data);
       return res.data;
     } catch (e) {
-      return rejectWithValue(e.response.data);
+      toast.error(e.response.data.message);
     }
   }
 );
@@ -48,6 +48,44 @@ export const reNameGroup = createAsyncThunk(
     }
   }
 );
+
+export const addMembers = createAsyncThunk(
+  "chat/addMembers",
+  async ({ data, toast }, { rejectWithValue }) => {
+    try {
+      const res = await api.addMembers(data);
+      toast("Add member successfully");
+      return res.data;
+    } catch (e) {
+      toast.error(e.response.data.message);
+    }
+  }
+);
+
+export const leaveRoom = createAsyncThunk(
+  "chat/leaveRoom",
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await api.leaveRoom(data);
+      return res.data;
+    } catch (e) {
+      return rejectWithValue(e.response.data);
+    }
+  }
+);
+
+export const deleteRoom = createAsyncThunk(
+  "chat/deleteRoom",
+  async ({ data, toast }, { rejectWithValue }) => {
+    try {
+      const res = await api.deleteGroup(data);
+      return res.data;
+    } catch (e) {
+      toast.error(e.response.data.message);
+    }
+  }
+);
+
 const chatSlice = createSlice({
   name: "chat",
   initialState: {
@@ -55,6 +93,7 @@ const chatSlice = createSlice({
     check: false,
     loading: false,
     error: null,
+    checkgorup: false,
   },
   reducers: {
     logout: (state, action) => {
@@ -112,6 +151,42 @@ const chatSlice = createSlice({
     [reNameGroup.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.payload;
+    },
+    [addMembers.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [addMembers.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.chats = action.payload;
+    },
+    [addMembers.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    [leaveRoom.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [leaveRoom.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.chats = action.payload;
+    },
+    [leaveRoom.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    [deleteRoom.pending]: (state, action) => {
+      state.loading = true;
+      state.checkgorup = true;
+    },
+    [deleteRoom.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.chats = action.payload;
+      state.checkgorup = false;
+    },
+    [deleteRoom.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      state.checkgorup = false;
     },
   },
 });

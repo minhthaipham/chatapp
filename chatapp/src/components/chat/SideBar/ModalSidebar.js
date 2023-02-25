@@ -111,7 +111,7 @@ const ModalSidebar = ({ open, handleClose }) => {
           image: dt.url.toString(),
           chatName,
         };
-        dispatch(createGroup(data));
+        dispatch(createGroup({ data, toast }));
         handleClose();
       });
   };

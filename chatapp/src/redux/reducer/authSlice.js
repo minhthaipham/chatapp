@@ -44,6 +44,19 @@ export const searchUser = createAsyncThunk(
   }
 );
 
+export const searchGroup = createAsyncThunk(
+  "auth/searchGroup",
+  async ({ data, id }, { rejectWithValue }) => {
+    console.log(data, id);
+    try {
+      const response = await api.searchUserGroup(data, id);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const editUser = createAsyncThunk(
   "auth/editUser",
   async ({ data, id }, { rejectWithValue }) => {

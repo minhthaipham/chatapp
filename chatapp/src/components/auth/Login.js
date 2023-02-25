@@ -22,7 +22,6 @@ import { checkTokenLocal } from "../../service/authService";
 const Login = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = React.useState(false);
-  console.log(isLoading);
   const dispatch = useDispatch();
   const { error } = useSelector((state) => state.auth);
   const [showPassword, setShowPassword] = React.useState(false);

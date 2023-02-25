@@ -55,7 +55,6 @@ export const listChatOfUser = async (req, res) => {
 export const getChat = async (req, res) => {
   // const data = req.body;
   // console.log(data);
-  console.log(req.params.id);
   try {
     const chat = await Chat.findOne({
       _id: req.params.id,
@@ -88,7 +87,6 @@ export const getUser = async (req, res, next) => {
 export const createGroupChat = async (req, res) => {
   try {
     const { id, image, chatName } = req.body;
-    console.log(chatName);
 
     if (id.length < 2) {
       return res
@@ -138,6 +136,24 @@ export const reNameGroup = async (req, res) => {
   }
 };
 
+export const searchAddMembers = async (req, res) => {
+  const { fullName, chatId } = req.query;
+  try {
+    const chat = await Chat.findOne({
+      _id: chatId,
+    });
+    const a = JSON.stringify(chat.users);
+    const b = JSON.parse(a);
+    const user = await User.find({
+      _id: { $nin: b },
+      fullName: { $regex: fullName, $options: "i" },
+    });
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 export const addMember = async (req, res) => {
   try {
     const { chatId, userId } = req.body;
@@ -159,10 +175,10 @@ export const addMember = async (req, res) => {
 
 export const removeMember = async (req, res) => {
   try {
-    const { chatId, userId } = req.body;
+    const { chatId } = req.body;
     const chat = await Chat.findByIdAndUpdate(
       { _id: chatId },
-      { $pull: { users: userId } },
+      { $pull: { users: req.userId } },
       { new: true }
     )
       .populate("users", "-password")
@@ -175,4 +191,24 @@ export const removeMember = async (req, res) => {
   }
 };
 
-export const deleteGroup = async (req, res) => {};
+export const deleteGroup = async (req, res) => {
+  const { id: chatId } = req.params;
+  try {
+    const check = await Chat.findById(chatId)
+      .populate("users", "-password")
+      .populate("latestMessage")
+      .populate("groupAdmin", "-password");
+
+    if (check.groupAdmin._id.toString() === req.userId) {
+      const chat = await Chat.findByIdAndDelete(chatId)
+        .populate("users", "-password")
+        .populate("latestMessage")
+        .populate("groupAdmin", "-password");
+      res.status(200).json(chat);
+    } else {
+      res.status(500).json({ message: "You are not admin" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

@@ -11,4 +11,9 @@ export const GIFJSON = {
   Welcome: require("./asset/Json/welcome.json"),
   Typing: require("./asset/Json/typing.json"),
   Camera: require("./asset/Json/camera.json"),
+  Logout: require("./asset/Json/logout.json"),
+  ReName: require("./asset/Json/reName.json"),
+  AddPeople: require("./asset/Json/addPeople.json"),
+  Trash: require("./asset/Json/trash.json"),
+  Group: require("./asset/Json/group.json"),
 };

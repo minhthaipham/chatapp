@@ -43,6 +43,10 @@ io.on("connection", (socket) => {
     io.emit("getUsers", users);
   });
 
+  //chat
+
+  //message
+
   socket.on("join", (idChat) => {
     socket.join(idChat);
   });
@@ -63,45 +67,6 @@ io.on("connection", (socket) => {
     users = users.filter((user) => user.socketId !== socket.id);
     io.emit("getUsers", users);
   });
-
-  // socket.on("newUser", (userId) => {
-  //   if (!users.includes(userId)) {
-  //     users.push({
-  //       userId: userId,
-  //       socketId: socket.id,
-  //     });
-  //   }
-  //   io.emit("getUsers", users);
-  // });
-  // socket.on("sendMessage", (data) => {
-  //   console.log(data);
-  //   const { receiveId } = data;
-  //   const user = users.find((user) => user.userId === receiveId);
-  //   if (user) {
-  //     io.to(user.socketId).emit("receiveMessage", data);
-  //   }
-  //   // io.to(user.socketId).emit("receiveMessage", data);
-  // });
-  // socket.on("typing-start", ({ idUser }) => {
-  //   const user = users.find((user) => user.userId === idUser);
-  //   if (user) {
-  //     console.log("typing-start", user);
-  //     // io.to(user.socketId).emit("typing-start-server", user.userId);
-  //     socket.broadcast.emit("typing-start-server", user.userId);
-  //   }
-  // });
-  // socket.on("typing-end", ({ idUser }) => {
-  //   const user = users.find((user) => user.userId === idUser);
-  //   if (user) {
-  //     console.log("typing-end", user);
-  //     io.to(user.socketId).emit("typing-end-server", user.userId);
-  //   }
-  // });
-  // socket.on("disconnect", () => {
-  //   console.log("user disconnected");
-  //   users = users.filter((user) => user.socketId !== socket.id);
-  //   io.emit("getUsers", users);
-  // });
 });
 
 mongoose.set("strictQuery", false);

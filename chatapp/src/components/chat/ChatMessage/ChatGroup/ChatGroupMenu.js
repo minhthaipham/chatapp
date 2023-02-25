@@ -19,10 +19,19 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logOutLocal } from "../../../../service/authService";
-import { logout } from "../../../../redux/reducer/chatSlice";
+import {
+  back,
+  deleteRoom,
+  leaveRoom,
+  logout,
+} from "../../../../redux/reducer/chatSlice";
 import UpdateUser from "../../../user/UpdateUser";
 import { Dialog } from "@mui/material";
 import RenameGroupModal from "./RenameGroupModal";
+import AddMembersGroupModal from "./AddMembersGroupModal";
+import { toast } from "react-toastify";
+import { GIFJSON } from "../../../../constant";
+import Lottie from "react-lottie";
 const StyledMenu = styled((props) => (
   <Menu
     elevation={0}
@@ -66,14 +75,21 @@ const StyledMenu = styled((props) => (
   },
 }));
 const ChatGroupMenu = () => {
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openReNameGroupModal, setOpenReNameGroupModal] = React.useState(false);
+  const [openAddMembers, setOpenAddMembers] = React.useState(false);
   const { chats } = useSelector((state) => state.chat);
-  const handleOpen = () => {
+  const handleOpenModal = () => {
     setOpenReNameGroupModal(true);
     handleClose();
   };
+  const handleOpenAddMembers = () => {
+    setOpenAddMembers(true);
+    handleClose();
+  };
   const handleCloseModal = () => setOpenReNameGroupModal(false);
+  const handleCloseAddMembers = () => setOpenAddMembers(false);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -82,6 +98,28 @@ const ChatGroupMenu = () => {
     setAnchorEl(null);
   };
 
+  const handleLeaveRoom = () => {
+    // hop thoai xac nhan
+    const confirm = window.confirm("Are you sure to leave this group?");
+    if (confirm) {
+      const data = {
+        chatId: chats?._id,
+      };
+      dispatch(leaveRoom(data));
+      toast("Leave group successfully");
+      dispatch(back());
+    }
+  };
+
+  const handleDeleteGroup = () => {
+    dispatch(
+      deleteRoom({
+        data: chats?._id,
+        toast,
+      })
+    );
+    dispatch(back());
+  };
   return (
     <div className="cursor-pointer">
       <MoreVert
@@ -102,26 +140,106 @@ const ChatGroupMenu = () => {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem disableRipple onClick={handleOpen}>
-          <EditIcon />
+        <MenuItem disableRipple onClick={handleOpenModal}>
+          <div className="my-0 ml-0 mr-[5px]">
+            <Lottie
+              options={{
+                loop: true,
+                autoplay: true,
+                animationData: GIFJSON.ReName,
+                rendererSettings: {
+                  preserveAspectRatio: "xMidYMid slice",
+                },
+              }}
+              height={25}
+              width={25}
+            />
+          </div>
           Rename group
         </MenuItem>
-        <MenuItem disableRipple>
-          <PersonAdd />
+        <MenuItem disableRipple onClick={handleOpenAddMembers}>
+          <div className="my-0 ml-0 mr-[5px]">
+            <Lottie
+              options={{
+                loop: true,
+                autoplay: true,
+                animationData: GIFJSON.AddPeople,
+                rendererSettings: {
+                  preserveAspectRatio: "xMidYMid slice",
+                },
+              }}
+              height={25}
+              width={25}
+            />
+          </div>
           Add people
         </MenuItem>
-        <MenuItem disableRipple>
-          <People />
+        {/* <MenuItem disableRipple>
+          <div className="my-0 ml-0 mr-[5px]">
+            <Lottie
+              options={{
+                loop: true,
+                autoplay: true,
+                animationData: GIFJSON.Group,
+                rendererSettings: {
+                  preserveAspectRatio: "xMidYMid slice",
+                },
+              }}
+              height={25}
+              width={25}
+            />
+          </div>
           Group info
-        </MenuItem>
-        <MenuItem disableRipple>
-          <DeleteOutline />
+        </MenuItem> */}
+        <MenuItem disableRipple onClick={handleDeleteGroup}>
+          <div className="my-0 ml-0 mr-[5px]">
+            <Lottie
+              options={{
+                loop: true,
+                autoplay: true,
+                animationData: GIFJSON.Trash,
+                rendererSettings: {
+                  preserveAspectRatio: "xMidYMid slice",
+                },
+              }}
+              height={25}
+              width={25}
+            />
+          </div>
           Delete group
+        </MenuItem>
+        <MenuItem
+          disableRipple
+          onClick={handleLeaveRoom}
+          sx={{
+            color: "red",
+          }}
+        >
+          <div className="my-0 ml-0 mr-[5px]">
+            <Lottie
+              options={{
+                loop: true,
+                autoplay: true,
+                animationData: GIFJSON.Logout,
+                rendererSettings: {
+                  preserveAspectRatio: "xMidYMid slice",
+                },
+              }}
+              height={25}
+              width={25}
+            />
+          </div>
+          Leave group
         </MenuItem>
       </StyledMenu>
       <RenameGroupModal
         open={openReNameGroupModal}
         handleClose={handleCloseModal}
+        chats={chats}
+      />
+      <AddMembersGroupModal
+        open={openAddMembers}
+        handleClose={handleCloseAddMembers}
         chats={chats}
       />
     </div>

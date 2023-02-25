@@ -11,7 +11,6 @@ import { useDispatch } from "react-redux";
 import { closeModal } from "../../../redux/reducer/modalSlice";
 import ModalImage from "./ModalImage";
 const Detail = ({ otherUser, chats }) => {
-  console.log("chats", chats);
   const dispatch = useDispatch();
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);

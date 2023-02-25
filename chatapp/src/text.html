@@ -8,14 +8,18 @@
 </head>
 <body>
     <script>
-        function a(){
-            for(var i=0; i<3; i++){
-                setTimeout(function(){
-                    console.log(i);
-                }, 1000);
-            }
-        }
-        a();
+const arr2 = ['63c7d168e38e9172f0230b1e', '63f7bb16c6138b8fe0cd670b'];
+const arr1 = ['63ecac8dcff4f34792200f0a', '63eb5ad837c6a4609aee135d', '63f7bb16c6138b8fe0cd670b'];
+const a = []
+const arr3 = arr1.filter((item) => {
+    if (arr2.includes(item)) {
+        a.push(item);
+    }
+    return !arr2.includes(item);
+});
+console.log(a);
+console.log(arr3);
+
     </script>
 </body>
 </html>
