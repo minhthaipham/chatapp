@@ -44,15 +44,23 @@ io.on("connection", (socket) => {
   });
 
   //chat
-
+  socket.on("accessChat", (chat) => {
+    console.log("chat", chat);
+    socket.broadcast.emit("accessChat", chat);
+  });
   //message
 
   socket.on("join", (idChat) => {
     socket.join(idChat);
   });
   socket.on("sendMessage", ({ data, idChat }) => {
+    socket.broadcast.emit("notification-server", data);
     socket.to(idChat).emit("receiveMessage", data);
   });
+
+  // socket.on("notification", (idChat) => {
+  //   socket.to(idChat).emit("notification-server");
+  // });
 
   socket.on("typing-start", (idChat) => {
     // socket.broadcast.emit("typing-start-server");

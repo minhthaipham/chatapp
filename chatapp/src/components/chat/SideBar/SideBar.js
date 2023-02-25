@@ -59,25 +59,36 @@ const SideBar = () => {
   const { users } = useSelector((state) => state.auth);
   const [checkEmpty, setCheckEmpty] = React.useState(true);
   const [getListChats, setGetListChats] = React.useState([]);
-  const [userChats, setUserChats] = React.useState(null);
+  // console.log("getListChats", getListChats);
+  const [userChats, setUserChats] = React.useState([]);
   const { isOpenSideBar } = useSelector((state) => state.modal);
   const [onlineUsers, setOnlineUsers] = React.useState([]);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const { chats } = useSelector((state) => state.chat);
+  // console.log("chats", chats);
   const { check } = useSelector((state) => state.chat);
-  // const [open , setOpen] = React.useStateFopen
 
-  // console.log("onlineUsers", onlineUsers);
-  // console.log("userChat", UserChat);
   React.useEffect(() => {
     const fetchChat = async () => {
       const { data } = await api.listChatOfUser();
-      setGetListChats(data);
-      // setDataTest(data);
+      setGetListChats([...data, userChats]);
     };
     fetchChat();
+  }, [chats, userChats]);
+  React.useEffect(() => {
+    socket.on("accessChat", (data) => {
+      const otherUser = data?.users?.find((users) => users._id !== result?._id);
+      if (otherUser) {
+        setUserChats((prev) => [...prev, otherUser]);
+      }
+    });
+  }, []);
+
+  React.useEffect(() => {
+    socket.emit("accessChat", chats);
   }, [chats]);
+
   React.useEffect(() => {
     socket.emit("online", result?._id);
     socket.on("getUsers", (user) => {
@@ -120,7 +131,6 @@ const SideBar = () => {
             <ListUserSearch
               key={index}
               users={users}
-              setUserChats={setUserChats}
               onlineUsers={onlineUsers}
             />
           ))

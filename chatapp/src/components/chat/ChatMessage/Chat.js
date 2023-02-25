@@ -35,6 +35,8 @@ const Chat = ({ idChat }) => {
   const [typing, setTyping] = React.useState(false);
   const [typingTimeout, setTypingTimeout] = React.useState(null);
   const { check } = useSelector((state) => state.chat);
+  const [noti, setNoti] = React.useState(0);
+  console.log("noti", noti);
   const inputRef = React.useRef(null);
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -70,6 +72,15 @@ const Chat = ({ idChat }) => {
       } else {
         console.log("khong phai");
       }
+    });
+  }, []);
+
+  React.useEffect(() => {
+    socket.on("notification-server", (data) => {
+      console.log("data", data);
+      // if (data?.chat === idChat) {
+      setNoti((prev) => prev + 1);
+      // }
     });
   }, []);
 

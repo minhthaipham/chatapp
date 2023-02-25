@@ -35,7 +35,9 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 const ListUser = ({ user, onlineUsers, item }) => {
+  const socket = useSocket();
   const { result } = JSON.parse(localStorage.getItem("user"));
+  const [noti, setNoti] = React.useState(0);
   const dispatch = useDispatch();
   const handleGetChat = (id) => {
     // try {
@@ -69,6 +71,15 @@ const ListUser = ({ user, onlineUsers, item }) => {
       return "";
     }
   };
+
+  // React.useEffect(() => {
+  //   socket.on("notification-server", (data) => {
+  //     if (data?.idChat === item?._id || data?.idChat === user?._id) {
+  //       setNoti((prev) => prev + 1);
+  //     }
+  //   });
+  // }, [socket, item, user]);
+
   return (
     <div
       className="mt-3 cursor-pointer hover:bg-[rgba(0,0,0,0.1)] px-6 py-2"
@@ -79,28 +90,41 @@ const ListUser = ({ user, onlineUsers, item }) => {
         handleGetChat(item?._id || user?._id);
       }}
     >
-      <div className="flex items-center">
-        {onlineUsers?.find((userOnline) => userOnline?.userId === user?._id) ? (
-          <StyledBadge
-            overlap="circular"
-            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            variant="dot"
-            className="mr-2"
-          >
-            <Avatar src={user?.avatar || user?.image} />
-          </StyledBadge>
-        ) : (
-          <Avatar src={user?.avatar || user?.image} className="mr-2" />
-        )}
-        <div>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center">
+          {onlineUsers?.find(
+            (userOnline) => userOnline?.userId === user?._id
+          ) ? (
+            <StyledBadge
+              overlap="circular"
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              variant="dot"
+              className="mr-2"
+            >
+              <Avatar src={user?.avatar || user?.image} />
+            </StyledBadge>
+          ) : (
+            <Avatar src={user?.avatar || user?.image} className="mr-2" />
+          )}
           {/* <h1 className="text-white text-bold text-xl">{user?.fullName}</h1> */}
-          <p className="text-white text-bold text-xl  ">
-            {user?.fullName || user?.chatName}
-          </p>
-          <p className="text-white text-bold text-sm  opacity-[0.7]">
-            {LatestMessage()}
-          </p>
+          <div className="flex flex-col">
+            <p className="text-white text-bold text-xl  ">
+              {user?.fullName || user?.chatName}
+            </p>
+            <p className="text-white text-bold text-sm  opacity-[0.7]">
+              {LatestMessage()}
+            </p>
+          </div>
         </div>
+        {noti > 0 && (
+          <div
+            className="rounded-full  w-[25px] h-[25px] bg-red-500 
+          flex items-center justify-center text-white font-bold text-[18px]
+        "
+          >
+            {noti}
+          </div>
+        )}
       </div>
     </div>
   );
