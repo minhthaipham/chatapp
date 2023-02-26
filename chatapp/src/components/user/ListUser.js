@@ -38,6 +38,7 @@ const ListUser = ({ user, onlineUsers, item }) => {
   const socket = useSocket();
   const { result } = JSON.parse(localStorage.getItem("user"));
   const [noti, setNoti] = React.useState(0);
+  const { check } = useSelector((state) => state.chat);
   const dispatch = useDispatch();
   const handleGetChat = (id) => {
     // try {
@@ -50,7 +51,7 @@ const ListUser = ({ user, onlineUsers, item }) => {
   };
 
   const LatestMessage = () => {
-    if (item?.latestMessage || user?.latestMessage === null) {
+    if (item?.latestMessage) {
       if (
         item?.latestMessage?.users === result?._id ||
         user?.latestMessage?.users === result?._id
@@ -72,13 +73,16 @@ const ListUser = ({ user, onlineUsers, item }) => {
     }
   };
 
-  // React.useEffect(() => {
-  //   socket.on("notification-server", (data) => {
-  //     if (data?.idChat === item?._id || data?.idChat === user?._id) {
-  //       setNoti((prev) => prev + 1);
-  //     }
-  //   });
-  // }, [socket, item, user]);
+  React.useEffect(() => {
+    socket.on("notify", (data) => {
+      if (
+        data?.users?._id === user?._id &&
+        (item?._id === data?.chat || user?._id === data?.chat)
+      ) {
+        setNoti((prev) => prev + 1);
+      }
+    });
+  }, [socket, user?._id]);
 
   return (
     <div
@@ -116,7 +120,7 @@ const ListUser = ({ user, onlineUsers, item }) => {
             </p>
           </div>
         </div>
-        {noti > 0 && (
+        {/* {noti > 0 && (
           <div
             className="rounded-full  w-[25px] h-[25px] bg-red-500 
           flex items-center justify-center text-white font-bold text-[18px]
@@ -124,7 +128,17 @@ const ListUser = ({ user, onlineUsers, item }) => {
           >
             {noti}
           </div>
-        )}
+        )} */}
+
+        {!check && noti > 0 ? (
+          <div
+            className="rounded-full  w-[25px] h-[25px] bg-red-500
+          flex items-center justify-center text-white font-bold text-[18px]
+        "
+          >
+            {noti}
+          </div>
+        ) : null}
       </div>
     </div>
   );
