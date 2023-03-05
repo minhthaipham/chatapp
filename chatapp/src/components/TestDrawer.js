@@ -3,6 +3,8 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
+import EmojiPicker from "emoji-picker-react";
+import { SuggestionMode } from "emoji-picker-react";
 const dataUser = [
   {
     id: 1,
@@ -18,33 +20,33 @@ const dataUser = [
   },
 ];
 export default function TestDrawer() {
-  const [selectedImage, setSelectedImage] = React.useState("");
-  const [members, setMembers] = React.useState(dataUser);
-  const handleImageSelection = (event) => {
-    setSelectedImage(URL.createObjectURL(event.target.files[0]));
+  const [image, setImage] = React.useState(null);
+  const [showIcon, setShowIcon] = React.useState(false);
+  const [chosenEmoji, setChosenEmoji] = React.useState(null);
+  const handleChange = (e) => {
+    if (e.target.files[0]) {
+      setImage(e.target.files[0]);
+    }
   };
+  const handleShowIcon = () => {
+    setShowIcon(!showIcon);
+  };
+  const handleEmojiClick = (event, emojiObject) => {
+    setChosenEmoji(event.emoji);
+  };
+  const handle = (emojiData, event) => {};
   return (
-    // <div>
-    //   <div>
-    //     <input type="file" onChange={handleImageSelection} />
-    //     <img src={selectedImage} alt="Selected Image" />
-    //   </div>
-    // </div>
-    <div className="flex items-center">
-      {members.map((member) => (
-        <div className="flex items-center mx-2">
-          <div>
-            <img
-              src={member.avatar}
-              alt={member.name}
-              className="w-10 h-10 rounded-full"
-            />
-          </div>
-          <div>
-            <h1>{member.name}</h1>
-          </div>
-        </div>
-      ))}
+    <div className="flex items-center h-screen justify-center">
+      <div>
+        <EmojiPicker onEmojiClick={handleEmojiClick} height={500} width={400} />
+      </div>
+      <div>
+        {chosenEmoji ? (
+          <span>You chose: {chosenEmoji}</span>
+        ) : (
+          <span>No emoji chosen yet.</span>
+        )}
+      </div>
     </div>
   );
 }

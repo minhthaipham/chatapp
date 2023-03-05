@@ -79,6 +79,7 @@ export const deleteRoom = createAsyncThunk(
   async ({ data, toast }, { rejectWithValue }) => {
     try {
       const res = await api.deleteGroup(data);
+      toast("Delete group successfully");
       return res.data;
     } catch (e) {
       toast.error(e.response.data.message);

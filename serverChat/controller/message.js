@@ -3,24 +3,14 @@ import Chat from "../model/chat.js";
 import User from "../model/auth.js";
 export const sendMessage = async (req, res) => {
   const { idChat, content, nameUser } = req.body;
+  // console.log("image", image);
   try {
-    // const message = await Message.create({
-    //   idChat,
-    //   content,
-    //   sender: req.userId,
-    // });
-    // const user = await User.find();
-    // console.log(user);
-    // await Chat.findByIdAndUpdate(idChat, {
-    //   latestMessage: message,
-    // })
-    //   .populate("users", "-password")
-    //   .populate("latestMessage");
     const message = new Message({
       chat: idChat,
       content,
       users: req.userId,
       nameUser,
+      // image,
     });
     await message.save();
     await Chat.findByIdAndUpdate(

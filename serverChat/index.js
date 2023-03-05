@@ -32,7 +32,6 @@ app.use("/message", message);
 
 let users = [];
 io.on("connection", (socket) => {
-  console.log("a user connected");
   socket.on("online", (userId) => {
     if (!users.includes(userId)) {
       users.push({
@@ -48,22 +47,26 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("accessChat", chat);
   });
   //message
-
   socket.on("join", (idChat) => {
     socket.join(idChat);
   });
   socket.on("sendMessage", ({ data, idChat }) => {
     socket.broadcast.emit("notify", data);
-
-    // if (data?.chat === idChat) {
     socket.to(idChat).emit("receiveMessage", data);
-    // }
   });
 
-  // socket.on("notification", (idChat) => {
-  //   socket.to(idChat).emit("notification-server");
-  // });
+  //group
+  socket.on("reNameGroup", (data) => {
+    // socket.to(data.chatId).emit("reNameGroup", data.chatName);
+    io.in(data.chatId).emit("reNameGroup", data.chatName);
+  });
+  socket.on("leaveRoom", (data) => {
+    console.log("data", data);
+    socket.leave(data.chatId);
+    socket.to(data.chatId).emit("leaveRoom", data.nameUser);
+  });
 
+  //typing
   socket.on("typing-start", (idChat) => {
     // socket.broadcast.emit("typing-start-server");
     socket.to(idChat).emit("typing-start-server");

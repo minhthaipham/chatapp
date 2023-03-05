@@ -206,7 +206,7 @@ export const deleteGroup = async (req, res) => {
         .populate("groupAdmin", "-password");
       res.status(200).json(chat);
     } else {
-      res.status(500).json({ message: "You are not admin" });
+      res.status(500).json({ message: "You are not the room owner " });
     }
   } catch (err) {
     res.status(500).json({ message: err.message });

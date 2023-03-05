@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import {
   Avatar,
   Dialog,
@@ -11,8 +10,9 @@ import {
 } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { reNameGroup } from "../../../../redux/reducer/chatSlice";
-
+import { useSocket } from "../../../../context/SocketContext";
 export default function BasicModal({ open, handleClose, chats }) {
+  const socket = useSocket();
   const [chatName, setChatName] = React.useState(chats?.chatName);
   const dispatch = useDispatch();
   const handleClick = () => {
@@ -21,6 +21,7 @@ export default function BasicModal({ open, handleClose, chats }) {
       chatName,
     };
     dispatch(reNameGroup(data));
+    socket.emit("reNameGroup", data);
     handleClose();
   };
   return (

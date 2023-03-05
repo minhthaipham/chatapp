@@ -86,15 +86,6 @@ const ModalSidebar = ({ open, handleClose }) => {
 
   const handleSubmit = async () => {
     const id = members.map((member) => member._id);
-    // console.log(id);
-    // // const data = JSON.parse(id);
-    // try {
-    //   const res = await api.createGroup({ id, image });
-    //   console.log(res);
-    //   handleClose();
-    // } catch (error) {
-    //   toast.error(error.response.data.message);
-    // }
     const formData = new FormData();
     formData.append("file", image);
     formData.append("upload_preset", "chat-app");
@@ -113,7 +104,14 @@ const ModalSidebar = ({ open, handleClose }) => {
         };
         dispatch(createGroup({ data, toast }));
         handleClose();
+        setMembers([]);
+        setChatName("");
+        setAddMembers("");
+        setListUser([]);
+        setImage("");
       });
+
+    //clear
   };
 
   return (

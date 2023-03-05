@@ -6,6 +6,7 @@ const messageSchema = mongoose.Schema(
     users: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     nameUser: { type: String },
     content: { type: String, trim: true },
+    image: { type: String },
     // readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }

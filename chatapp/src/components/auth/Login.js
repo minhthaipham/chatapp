@@ -74,8 +74,8 @@ const Login = () => {
   ) : (
     <div className="login">
       (
-      <div className="min-h-screen flex items-center justify-center px-36  py-8 ">
-        <div className="bg-gray-100 w-full h-full px-16 flex items-center py-8 min-w-[400px] rounded-lg">
+      <div className="flex items-center justify-center px-36  pt-[7rem] ">
+        <div className="bg-slate-50 w-full h-full px-16 flex items-center py-8 min-w-[400px] rounded-lg">
           <div className="w-full md:w-1/2 md:mx-10">
             <h1 className="text-3xl font-bold text-gray-700 text-center">
               Login
@@ -156,7 +156,7 @@ const Login = () => {
           </div>
           <div className="md:w-1/2 hidden md:block">
             <img
-              src="https://i.pinimg.com/564x/7b/80/e3/7b80e31e8574a8800e09c0b9e3f0028b.jpg"
+              src="https://static.vecteezy.com/system/resources/previews/000/561/500/original/chat-app-logo-icon-vector.jpg"
               alt="logo"
               className=" object-cover rounded-md"
             />

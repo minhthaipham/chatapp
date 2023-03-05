@@ -32,6 +32,7 @@ import AddMembersGroupModal from "./AddMembersGroupModal";
 import { toast } from "react-toastify";
 import { GIFJSON } from "../../../../constant";
 import Lottie from "react-lottie";
+import { useSocket } from "../../../../context/SocketContext";
 const StyledMenu = styled((props) => (
   <Menu
     elevation={0}
@@ -80,6 +81,8 @@ const ChatGroupMenu = () => {
   const [openReNameGroupModal, setOpenReNameGroupModal] = React.useState(false);
   const [openAddMembers, setOpenAddMembers] = React.useState(false);
   const { chats } = useSelector((state) => state.chat);
+  const socket = useSocket();
+  const { result } = JSON.parse(localStorage.getItem("user"));
   const handleOpenModal = () => {
     setOpenReNameGroupModal(true);
     handleClose();
@@ -99,26 +102,36 @@ const ChatGroupMenu = () => {
   };
 
   const handleLeaveRoom = () => {
-    // hop thoai xac nhan
     const confirm = window.confirm("Are you sure to leave this group?");
     if (confirm) {
       const data = {
         chatId: chats?._id,
       };
       dispatch(leaveRoom(data));
-      toast("Leave group successfully");
       dispatch(back());
+      const dataLeave = {
+        chatId: chats?._id,
+        nameUser: result.fullName,
+      };
+      socket.emit("leaveRoom", dataLeave);
     }
   };
 
   const handleDeleteGroup = () => {
-    dispatch(
-      deleteRoom({
-        data: chats?._id,
-        toast,
-      })
-    );
-    dispatch(back());
+    // hop thoai xac nhan
+    const confirm = window.confirm("Are you sure to delete this group?");
+    if (confirm) {
+      const data = {
+        chatId: chats?._id,
+      };
+      dispatch(
+        deleteRoom({
+          data: chats?._id,
+          toast,
+        })
+      );
+      dispatch(back());
+    }
   };
   return (
     <div className="cursor-pointer">

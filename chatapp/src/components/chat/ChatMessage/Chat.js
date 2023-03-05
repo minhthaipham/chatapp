@@ -14,40 +14,48 @@ import { closeModal } from "../../../redux/reducer/modalSlice";
 import MessageLeft from "../../messages/MessageLeft";
 import MessageRight from "../../messages/MessageRight";
 import { useSocket } from "../../../context/SocketContext";
-import moment from "moment";
-// import { getMessage, sendMessage } from "../../../redux/reducer/messageSlice";
-// import { getMessages } from "../../../api";
+import EmojiPicker from "emoji-picker-react";
 import * as api from "../../../api";
 import { back } from "../../../redux/reducer/chatSlice";
 import SideBarMenu from "../SideBar/SideBarMenu";
 import ChatGroupMenu from "./ChatGroup/ChatGroupMenu";
 const Chat = ({ idChat }) => {
   const socket = useSocket();
-  // const { close, setClose } = React.useContext(AppContext);
-  // const { messages } = useSelector((state) => state.message);
-  // console.log("messages", messages);
+
   const dispatch = useDispatch();
   const { result } = JSON.parse(localStorage.getItem("user"));
   const { isOpen } = useSelector((state) => state.modal);
   const [dataChat, setDataChat] = React.useState([]);
   const [textMessage, setTextMessage] = React.useState("");
+  const [image, setImage] = React.useState(null);
   const { chats } = useSelector((state) => state.chat);
   const [typing, setTyping] = React.useState(false);
   const [typingTimeout, setTypingTimeout] = React.useState(null);
   const { check } = useSelector((state) => state.chat);
-
+  const [nameGroup, setNameGroup] = React.useState(chats?.chatName);
+  const [showIcon, setShowIcon] = React.useState(false);
+  console.log(showIcon);
   const inputRef = React.useRef(null);
+
+  const handleUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (textMessage === "") {
+      return;
+    }
     const message = {
       idChat,
       content: textMessage,
       nameUser: result.fullName,
+      image,
     };
-    // setDataChat((prev) => [...prev, message]);
-    // setTextMessage("");
-    // socket.emit("sendMessage", { message, idChat });
     try {
       const { data } = await api.sendMessage(message);
       setDataChat([...dataChat, data]);
@@ -57,11 +65,6 @@ const Chat = ({ idChat }) => {
     } catch (error) {
       console.log(error);
     }
-    // const receiveId = chats?.users.find((item) => item._id !== result._id)?._id;
-    // setSendMessage({
-    //   ...message,
-    //   receiveId,
-    // });
   };
 
   React.useEffect(() => {
@@ -128,6 +131,20 @@ const Chat = ({ idChat }) => {
       inputRef.current.focus();
     }
   }, [check]);
+
+  React.useEffect(() => {
+    socket.on("reNameGroup", (data) => {
+      setNameGroup(data);
+    });
+  }, []);
+
+  const handleShowIcon = () => {
+    setShowIcon(!showIcon);
+  };
+  const onEmojiClick = (event, emojiObject) => {
+    setTextMessage(textMessage + event.emoji);
+  };
+
   return (
     <div className="h-screen">
       {/* //header */}
@@ -150,7 +167,7 @@ const Chat = ({ idChat }) => {
               className="cursor-pointer"
             />
             <h1 className="text-bold text-2xl  ml-2">
-              {chats?.chatName ||
+              {nameGroup ||
                 chats?.users.find((item) => item._id !== result._id)?.fullName}
             </h1>
           </div>
@@ -202,6 +219,7 @@ const Chat = ({ idChat }) => {
             })}
           </div>
         </div>
+
         <div className="absolute bottom-10 ml-4">
           {typing && (
             <div className="flex items-center">
@@ -242,19 +260,40 @@ const Chat = ({ idChat }) => {
               onChange={handleChange}
               ref={inputRef}
             />
-            <div className="absolute right-0 top-[50%] transform -translate-y-1/2">
-              <InsertEmoticon className=" rounded-md text-black mr-3" />
-              <AttachFile className=" rounded-md text-black mr-3" />
-              <Button type="submit" variant="contained" endIcon={<Send />}>
+            <div className="absolute right-0 top-[50%] transform -translate-y-1/2 cursor-pointer flex items-center h-full">
+              <InsertEmoticon
+                className=" rounded-md text-black mr-3"
+                onClick={handleShowIcon}
+              />
+              {showIcon && (
+                <div className="absolute bottom-[70%] right-[100%]">
+                  <EmojiPicker onEmojiClick={onEmojiClick} />
+                </div>
+              )}
+              <div className="relative">
+                <input
+                  type="file"
+                  className="
+                absolute top-0 left-0 w-[1.3rem] h-full  cursor-pointer opacity-0
+                  "
+                  onChange={handleUpload}
+                />
+                <AttachFile className="rounded-md text-black mr-3 w-[1rem]" />
+              </div>
+              <Button
+                type="submit"
+                variant="contained"
+                endIcon={<Send />}
+                // fullWidth
+                sx={{
+                  height: "100%",
+                }}
+              >
                 Send
               </Button>
             </div>
           </form>
         </div>
-        {/* <div>
-            <InsertEmoticon className="bg-blue-500 rounded-md text-white" />
-            <AttachFile className="bg-blue-500 rounded-md text-white" />
-          </div> */}
       </div>
     </div>
   );
