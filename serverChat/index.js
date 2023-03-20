@@ -48,6 +48,7 @@ io.on("connection", (socket) => {
   });
   //message
   socket.on("join", (idChat) => {
+    console.log("idChat", idChat);
     socket.join(idChat);
   });
   socket.on("sendMessage", ({ data, idChat }) => {

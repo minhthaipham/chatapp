@@ -33,8 +33,8 @@ const Chat = ({ idChat }) => {
   const [typingTimeout, setTypingTimeout] = React.useState(null);
   const { check } = useSelector((state) => state.chat);
   const [nameGroup, setNameGroup] = React.useState(chats?.chatName);
+  console.log(chats);
   const [showIcon, setShowIcon] = React.useState(false);
-  console.log(showIcon);
   const inputRef = React.useRef(null);
 
   const handleUpload = (e) => {
@@ -69,14 +69,15 @@ const Chat = ({ idChat }) => {
 
   React.useEffect(() => {
     socket.on("receiveMessage", (dataChat) => {
-      // console.log("dataChat", dataChat);
+      // if (dataChat?.chat === idChat) {
+      //   setDataChat((prev) => [...prev, dataChat]);
+      // } else {
+      // }
       if (dataChat?.chat === idChat) {
         setDataChat((prev) => [...prev, dataChat]);
-      } else {
       }
-      // setDataChat((prev) => [...prev, dataChat]);
     });
-  }, []);
+  }, [socket]);
 
   const fetchDataMessage = async () => {
     try {
@@ -90,12 +91,6 @@ const Chat = ({ idChat }) => {
 
   React.useEffect(() => {
     fetchDataMessage();
-    // socket.on("typing-start-server", () => {
-    //   setTyping(true);
-    // });
-    // socket.on("typing-end-server", () => {
-    //   setTyping(false);
-    // });
   }, [idChat]);
 
   React.useEffect(() => {
@@ -167,7 +162,7 @@ const Chat = ({ idChat }) => {
               className="cursor-pointer"
             />
             <h1 className="text-bold text-2xl  ml-2">
-              {nameGroup ||
+              {chats?.chatName ||
                 chats?.users.find((item) => item._id !== result._id)?.fullName}
             </h1>
           </div>
